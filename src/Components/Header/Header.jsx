@@ -7,34 +7,7 @@ console.log("Header render outside");
 const Header = () => {
   return (
     <>
-      {/* <div className="bg-slate-100	 py-5">
-        <div className="container">
-          <div className="flex items-center justify-between">
-            <div className=''>
-              <img src={logo} alt="" />
-            </div>
-            <div className=''>
-              <ul className='flex gap-8'>
-                <a href="#"><li className='cursor-pointer hover:text-gray-600 font-bold'>Каталог</li></a>
-                <a href="#Category"><li className='cursor-pointer hover:text-gray-600 font-bold'>Доставка</li></a>
-                <a href="#Product"><li className='cursor-pointer hover:text-gray-600 font-bold'>Условия</li></a>
-                <a href="#Footer"><li className='cursor-pointer hover:text-gray-600 font-bold'>Контакты</li></a>
-              </ul>
-            </div>
-            <div className='flex flex-col items-end'>
-              <div className='flex gap-2'>
-                <p className='text-xl	s'>+ 375 736 463 64 72</p>
-                <p className='text-xl ml-3 text-gray-500'>/</p>
-                <p className='text-xl'>+ 375 736 463 64 72</p>
-              </div>
-              <div>
-                <span className='text-sm	text-slate-300'>Заказать звонок</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-      <div className="bg-slate-100 py-5">
+      <div className="bg-slate-50 py-5">
         <div className="container">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-4 md:mb-0">
