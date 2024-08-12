@@ -87,11 +87,11 @@ const Product = () => {
   const productItem = products.map((product) => (
     <div
       key={product.id}
-      className="product__wrapper overflow-hidden group w-[350px] mt-7 relative duration-300 p-4 gap-1 hover:shadow-lg hover:cursor-pointer flex flex-col rounded-[30px]"
+      className="product__wrapper overflow-hidden group w-[350px] mt-7 relative duration-300 p-4 gap-1 hover:cursor-pointer flex flex-col rounded-[30px] hover:scale-[1.005] hover:shadow-xl"
     >
       <img
         src={product.images?.[0]}
-        className="w-full h-[300px] object-contain"
+        className="w-full h-[300px] object-contain hover:scale-[1.03]"
         alt={product.title}
       />
       <p className="text-[red] font-bold">{product.discountPercentage}%</p>
@@ -114,7 +114,7 @@ const Product = () => {
     </option>
   ));
   return (
-    <div id="Product" className="mt-16 container mx-auto px-4">
+    <div id="Product" className="mt-16 container mx-auto px-14">
       <select
         onChange={(e) => setSelectedCategory(e.target.value)}
         value={selectedCategory}
@@ -129,7 +129,7 @@ const Product = () => {
       {
         products.length < totalProducts && (
           <button
-            className="border block mx-auto mt-10 rounded-[20px] py-2 px-2 bg-gray-800 text-white"
+            className="border-none block mx-auto mt-10 rounded-[20px] py-3 px-6 bg-blue-700 text-white hover:bg-blue-900 active:bg-blue-950"
             onClick={handleClick}
           >
             See more
