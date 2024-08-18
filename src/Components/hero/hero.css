@@ -1,0 +1,57 @@
+.desc::before {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    top: 8px;
+    left: -12px;
+    border-radius: 50%;
+    background: #FF9900;
+}
+
+.db{
+    display: none;
+}
+.hero__box {
+    border-radius: 75px;
+    width: 40%;
+}
+
+.desc {
+    position: relative;
+    margin-left: 12px;
+}
+
+@media (max-width:1250px) {
+    .hero__wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+    .dn{
+        display: none;
+    }
+
+    .db{
+        display: block;
+        width: 100%;
+    }
+
+    .hero__box {
+        width: 100%;
+    }
+
+    .hero__img {
+        width: 100%;
+    }
+}
+@media (max-width:500px) {
+  .hero__title{
+    font-size: 32px !important;
+  }
+   
+  .hero__btn{
+    width: 100% !important; 
+    margin: 0 10px !important;
+  }
+}
+

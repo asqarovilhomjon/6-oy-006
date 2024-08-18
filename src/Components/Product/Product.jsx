@@ -1,143 +1,172 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { MdOutlineAddShoppingCart } from "react-icons/md";
-
+import React, { useEffect, useState ,memo} from "react";
+import {  useParams } from "react-router-dom";
+import { IoStarOutline } from "react-icons/io5";
+import { LiaCartPlusSolid } from "react-icons/lia";
+import { IoBarChartOutline } from "react-icons/io5";
+import { IoIosArrowForward } from "react-icons/io";
 const API_URL = "https://dummyjson.com";
-
 const Product = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [limit, setLimit] = useState(1);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [totalProducts, setTotalProducts] = useState(0);
+  const { id } = useParams();
+  const [data, setData] = useState(null);
+  const [products, setProducts] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    const categoryUrl = selectedCategory
-      ? `/products/category/${selectedCategory}`
-      : "/products";
-    axios
-      .get(`${API_URL}${categoryUrl}`, {
-        params: {
-          limit: 4 * limit,
-        },
-      })
-      .then((res) => {
-        setProducts(res.data.products || []);
-        setTotalProducts(res.data.total || 0); // Store the total number of products
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch products:", err);
-        setLoading(false);
-      });
-  }, [limit, selectedCategory]);
-  
-  // Fetch categories
-  useEffect(() => {
-    axios
-      .get(`${API_URL}/products/category-list`)
-      .then((res) => setCategories(res.data))
-      .catch((err) => console.log(err));
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    const categoryUrl = selectedCategory
-      ? `/products/category/${selectedCategory}`
-      : "/products";
     axios
-      .get(`${API_URL}${categoryUrl}`, {
+      .get(`${API_URL}/products`, {
         params: {
-          limit: 4 * limit,
+          limit: 4,
         },
       })
       .then((res) => {
-        setProducts(res.data.products || []);
-        setLoading(false);
+        setProducts(res.data.products.map((item) => ({ ...item, offset: 0 })));
       })
-      .catch((err) => {
-        console.error("Failed to fetch products:", err);
-        setLoading(false);
-      });
-  }, [limit, selectedCategory]);
-
-  const handleClick = () => setLimit((prev) => prev + 1);
-
-  const loadingSkeleton = Array(4)
-    .fill(0)
-    .map((_, index) => (
-      <div
-        key={index}
-        className="product__wrapper overflow-hidden group w-[350px] mt-7 relative duration-300 p-4 gap-1 flex flex-col rounded-[30px] animate-pulse bg-gray-200"
-      >
-        <div className="w-full h-[300px] bg-gray-300" />
-        <p className="h-4 bg-gray-300 w-1/3 mt-4" />
-        <h3 className="h-6 bg-gray-300 w-2/3 mt-2" />
-        <p className="h-4 bg-gray-300 w-full mt-2" />
-        <p className="h-8 bg-gray-300 w-1/2 mt-5 mb-10" />
-        <div className="flex justify-between">
-          <div className="w-1/4 h-6 bg-gray-300" />
-          <div className="w-12 h-12 bg-gray-300 rounded-full" />
-        </div>
-      </div>
-    ));
-
-  const productItem = products.map((product) => (
-    <div
-      key={product.id}
-      className="product__wrapper overflow-hidden group w-[350px] mt-7 relative duration-300 p-4 gap-1 hover:cursor-pointer flex flex-col rounded-[30px] hover:scale-[1.005] hover:shadow-xl"
-    >
-      <img
-        src={product.images?.[0]}
-        className="w-full h-[300px] object-contain hover:scale-[1.03]"
-        alt={product.title}
-      />
-      <p className="text-[red] font-bold">{product.discountPercentage}%</p>
-      <h3 className="text-xl">{product.title}</h3>
-      <p className="line-clamp-1">{product.description}</p>
-      {product.dimensions && (
-        <p>
-          {product.dimensions.width}x{product.dimensions.height} cm
-        </p>
-      )}
-      <p className="text-black text-3xl mb-10 mt-5 font-bold">
-        {product.price} $
-      </p>
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
+  }, []);
+  const handleAddToCart = (id, positive = true) => {
+    setProducts((prev) =>
+      prev.map((item) => {
+        return item.id === id
+          ? { ...item, offset: positive ? item.offset + 1 : item.offset - 1 }
+          : item;
+      })
+    );
+  };
+  const skeletonItems = new Array(4).fill().map((product, idx) => (
+    <div className="p-4 border" key={idx}>
+      {" "}
+      <div className="w-full h-64 object-contain bg-slate-200"></div>
+      <div className="h-4 bg-slate-200 w-full mt-3 rounded"></div>{" "}
+      <div className="w-[200px] h-4 bg-slate-200 rounded mt-3"></div>{" "}
+      <div className="w-[150px] h-4 bg-slate-200 mt-3 rounded"></div>
     </div>
   ));
+  const productItem = products?.map((product) => (
+    <div
+      key={product.id}
+      className="p-3 h-[398px] overflow-hidden api border flex flex-col gap-4 items-center justify-center rounded-lg shadow-md relative mb-10"
+    >
+      <img
+        src={product.images[0]}
+        alt=""
+        className="duration-300 image w-full h-52 object-contain hover:scale-105 absolute top-0 left-0"
+      />
 
-  const categoryOptions = categories.map((category) => (
-    <option key={category} value={category}>
-      {category}
-    </option>
-  ));
-  return (
-    <div id="Product" className="mt-16 container mx-auto px-14">
-      <select
-        onChange={(e) => setSelectedCategory(e.target.value)}
-        value={selectedCategory}
-        className="mb-4 p-2 border rounded"
-      >
-        <option value="">All</option>
-        {categoryOptions}
-      </select>
-      <div className="flex flex-wrap justify-between">
-        {loading ? loadingSkeleton : productItem}
+      <div className="w-full h-52"></div>
+      <div className="flex flex-col gap-2 ">
+        <h3 className="text-center text-xl font-semibold">{product.brand}</h3>
+        <p className="text-red-500 text-sm font-medium ml-2">12%</p>
+        <p className="desck">{product.description}</p>
+        <p className="text-lg font-semibold ml-2">${product.price}</p>
       </div>
-      {
-        products.length < totalProducts && (
-          <button
-            className="border-none block mx-auto mt-10 rounded-[20px] py-3 px-6 bg-blue-700 text-white hover:bg-blue-900 active:bg-blue-950"
-            onClick={handleClick}
-          >
-            See more
-          </button>
-        )
-      }
+      <button className=" button w-12 border rounded-full bg-emerald-300 p-1 text-xs text-slate-100">
+        New
+      </button>
+      <button className="btr w-5 h-5 rounded-full border-none bg-yellow-400 ">
+        <LiaCartPlusSolid className="text-slate-100 text-2xl m-auto" />
+      </button>
+      <div className="ofset flex ">
+        <button
+          disabled={product.offset <= 0}
+          onClick={() => handleAddToCart(product.id, false)}
+          className="border w-6 h-6  flex items-center justify-center text-slate-400 rounded-md"
+        >
+          -
+        </button>
+        <button className="w-10">{product.offset}</button>
+        <button
+          onClick={() => handleAddToCart(product.id)}
+          className="border w-6 h-6  flex items-center justify-center text-slate-400 rounded-md"
+        >
+          +
+        </button>
+      </div>
+    </div>
+  ));
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/products/${id}`)
+      .then((res) => setData(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+  console.log(data);
+
+  return (
+    <div className="container mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 mb-10 px-1 ">
+        <div>
+          {" "}
+          <img
+            className="w-[200px] m-auto mb-4 object-contain"
+            src={data?.images[0]}
+            alt="foto"
+          />
+          <div className="flex">
+            {data?.images?.map((item, inx) => (
+              <img
+                className="w-[60px] h-[60px] object-contain m-auto"
+                src={item}
+                key={inx}
+                alt="foto"
+              />
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-5">
+          <h2 className="text-[18px] font-[600]">{data?.brand}</h2>
+          <b className="text-[16px] font-[400]">
+            {data?.meta.createdAt}/
+            <b className="text-[16px] font-extralight">{data?.description}</b>
+          </b>
+          <div className="flex gap-[50px]">
+            <p className="text-[18px] font-bold">Br{data?.price}</p>
+            <div>
+              <button className="w-[32px] border text-[18px] rounded">-</button>
+              <button className="w-[50px]">1</button>
+              <button className="w-[32px] border text-[18px] rounded">+</button>
+            </div>
+          </div>
+          <div className="flex gap-5">
+            <button className="lg:py-[16px] bg-[#ff8a1e] cursor-pointer rounded-[32px] text-[#fff] lg:px-[80px] border py-[5px] px-[20px]">
+              Добаить в корзину +
+            </button>
+            <button className="border px-3 rounded-full">
+              <IoStarOutline className=" lg:text-[30px]" />
+            </button>
+            <button className="border px-3 rounded-full">
+              <IoBarChartOutline className="lg:text-[20px]" />
+            </button>
+          </div>
+          <p>{data?.description}</p>
+          <hr />
+          <div className="flex justify-between">
+            <p className="font-[600]">{data?.sku}</p>
+            <p>
+            <IoIosArrowForward />
+            </p>
+          </div>
+          <hr />
+          <div className="flex justify-between">
+            <p className="font-[600]">{data?.rating}%</p>
+            <p>
+            <IoIosArrowForward />            </p>
+          </div>
+          <hr />
+        </div>
+      </div>
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-center justify-center ">
+        {loading && skeletonItems}
+        {productItem}
+      </div>
     </div>
   );
 };
 
-export default Product;
+export default memo(Product);

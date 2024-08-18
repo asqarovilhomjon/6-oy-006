@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.navbar__collection .active{
+    color:rgb(252 211 77);
+}
+
+
+.container{
+    padding: 0 20px;
+    margin: 0 auto;
+  max-width: 1300px;
+  }
+  
+  .category:-webkit-scrollbar{
+    display: none;
+  }
+
+
+  .hrr{
+    width: 140px;
+    background-color: 
+    #FF9900;
+    height: 3px;
+  }
