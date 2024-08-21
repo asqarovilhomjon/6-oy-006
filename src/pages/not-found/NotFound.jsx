@@ -9,7 +9,7 @@ const NotFound = () => {
     <div className="container ">
       <div className="flex mr-auto flex-col gap-6 items-center  mb-4">
         <h2 className="text-[68px] text-yellow-300	 font-[800]">404</h2>
-        <p className="text-yellow-300	 text-2xl">Sahifa tugalanmagan </p>
+        <p className="text-yellow-300	 text-2xl">Sahifa topilmadi </p>
         <BsEmojiFrown className="text-[38px] text-[#dbdb38]" />
         <div className="mb-5">
           <button
